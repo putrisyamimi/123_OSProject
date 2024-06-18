@@ -456,7 +456,6 @@ At the terminal, create a new directory called **myroot**, and run a instance of
 ***Questions:***
 
 1. Check the permission of the files created in myroot, what user and group is the files created in docker container on the host virtual machine? . ***(2 mark)***
-
 ```bash
 @cuyaya ➜ /workspaces/123_OSProject/myroot/myroot (main) $ ls -l newfile
 -rw-rw-rw- 1 codespace codespace 0 Jun 18 09:41 newfile 
@@ -464,14 +463,12 @@ At the terminal, create a new directory called **myroot**, and run a instance of
 * __The owner (`codespace`) has the permission to read and write (`rw-`)__
 * __The group (`codespace`) has the permission to read and write (`rw-`)__
 
-
 2. Can you change the permission of the files to user codespace.  You will need this to be able to commit and get points for this question. ***(2 mark)***
 ```bash
 //use sudo and chown
 sudo chown -R codespace:codespace myroot
 ```
 __Yes, the permission of the file can be change to user codespace__
-
 ```bash
 @cuyaya ➜ /workspaces/123_OSProject (main) $ ls -l
 total 40
@@ -525,11 +522,42 @@ docker run -itd --net rednet --name c2 busybox sh
 ```
 ***Questions:***
 
-1. Describe what is busybox and what is command switch **--name** is for? . ***(2 mark)*** __Fill answer here__.
-2. Explore the network using the command ```docker network ls```, show the output of your terminal. ***(1 mark)*** __Fill answer here__.
-3. Using ```docker inspect c1``` and ```docker inspect c2``` inscpect the two network. What is the gateway of bluenet and rednet.? ***(1 mark)*** __Fill answer here__.
-4. What is the network address for the running container c1 and c2? ***(1 mark)*** __Fill answer here__.
-5. Using the command ```docker exec c1 ping c2```, which basically tries to do a ping from container c1 to c2. Are you able to ping? Show your output . ***(1 mark)*** __Fill answer here__.
+1. Describe what is busybox and what is command switch **--name** is for? . ***(2 mark)*** <br> 
+* __Busybox is a software suite that provides several Unix utilities for embedded systems and environment in a single executable file.__
+* __--name is used to give a specific name to a container__.
+
+2. Explore the network using the command ```docker network ls```, show the output of your terminal. ***(1 mark)*** 
+```bash
+@putrisyamimi ➜ /workspaces/123_OSProject (main) $ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+1eeef7cf096e   bluenet   bridge    local
+cb4ac3b5ca4c   bridge    bridge    local
+6edce98c816e   host      host      local
+69f71fb279e6   none      null      local
+120e7bc8fa83   rednet    bridge    local
+```
+
+3. Using ```docker inspect c1``` and ```docker inspect c2``` inscpect the two network. What is the gateway of bluenet and rednet.? ***(1 mark)*** <br> 
+* __c1 gateway: 172.18.0.1__.
+* __c2 gateway: 172.19.0.1__.
+
+4. What is the network address for the running container c1 and c2? ***(1 mark)*** <br> 
+#### Container c1 (bluenet): 
+* __IP Address: 172.18.0.2__
+* __Mac Address: 02:42:ac:12:00:02__
+* __Gateway: 172.18.0.1__
+
+#### Container c2 (rednet):
+* __IP Address: 172.19.0.2__
+* __Mac Address: 02:42:ac:13:00:02__
+* __Gateway: 172.19.0.1__
+
+5. Using the command ```docker exec c1 ping c2```, which basically tries to do a ping from container c1 to c2. Are you able to ping? Show your output . ***(1 mark)***
+```bash
+@putrisyamimi ➜ /workspaces/123_OSProject (main) $ docker exec c1 ping c2
+ping: bad address 'c2'
+```
+ __The ping is unsuccessful.__
 
 ## Bridging two SUB Networks
 1. Let's try this again by creating a network to bridge the two containers in the two subnetworks
@@ -541,8 +569,21 @@ docker exec c1 ping c2
 ```
 ***Questions:***
 
-1. Are you able to ping? Show your output . ***(1 mark)*** __Fill answer here__.
-2. What is different from the previous ping in the section above? ***(1 mark)*** __Fill answer here__.
+1. Are you able to ping? Show your output . ***(1 mark)*** 
+```bash
+@putrisyamimi ➜ /workspaces/123_OSProject (main) $ docker exec c1 ping c2
+PING c2 (172.20.0.3): 56 data bytes
+64 bytes from 172.20.0.3: seq=0 ttl=64 time=0.095 ms
+64 bytes from 172.20.0.3: seq=1 ttl=64 time=0.092 ms
+64 bytes from 172.20.0.3: seq=2 ttl=64 time=0.105 ms
+64 bytes from 172.20.0.3: seq=3 ttl=64 time=0.077 ms
+64 bytes from 172.20.0.3: seq=4 ttl=64 time=0.102 ms
+``` 
+__The ping is successful.__
+
+2. What is different from the previous ping in the section above? ***(1 mark)*** <br> 
+* __The previous ping create a new network called `bridgenet` to connect both `c1` and `c2` to a single network before attempting to ping__.
+* __The section above directly ping the `c1` and `c2` after they were connected to two different docker networks.__ 
 
 ## Intermediate Level (10 marks bonus)
 
