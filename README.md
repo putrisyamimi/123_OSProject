@@ -431,8 +431,12 @@ f65be1987f84   debian    "bash"    19 minutes ago   Exited (137) 18 seconds ago 
 
 ***Questions:***
 
-1. Are files in the container persistent. Why not?. ***(1 mark)*** __Fill answer here__.
-2. Can we run two, or three instances of debian linux? . ***(1 mark)*** __Fill answer here__.
+1. Are files in the container persistent. Why not?. ***(1 mark)*** <br>
+* __No, the file are not persistent. Each docker container has it owns filesystem. The file system is create from the image when the container starts and exists only as long as the container is running.__
+* __Docker containers is transitory which can be started, stopped, deleted and recreated easily. When a container is deleted, its filesystem along any files inside it is also deleted.__
+
+2. Can we run two, or three instances of debian linux? . ***(1 mark)***<br>
+ __Yes, we can run multiple instances of debian linux silmultaneously__.
 
 ## Running your own container with persistent storage
 
@@ -451,14 +455,30 @@ At the terminal, create a new directory called **myroot**, and run a instance of
 
 ***Questions:***
 
-1. Check the permission of the files created in myroot, what user and group is the files created in docker container on the host virtual machine? . ***(2 mark)*** __Fill answer here__.
+1. Check the permission of the files created in myroot, what user and group is the files created in docker container on the host virtual machine? . ***(2 mark)***
+
+```bash
+@cuyaya ➜ /workspaces/123_OSProject/myroot/myroot (main) $ ls -l newfile
+-rw-rw-rw- 1 codespace codespace 0 Jun 18 09:41 newfile 
+```
+* __The owner (`codespace`) has the permission to read and write (`rw-`)__
+* __The group (`codespace`) has the permission to read and write (`rw-`)__
+
+
 2. Can you change the permission of the files to user codespace.  You will need this to be able to commit and get points for this question. ***(2 mark)***
 ```bash
 //use sudo and chown
 sudo chown -R codespace:codespace myroot
-
 ```
-*** __Fill answer here__.***
+__Yes, the permission of the file can be change to user codespace__
+
+```bash
+@cuyaya ➜ /workspaces/123_OSProject (main) $ ls -l
+total 40
+-rw-rw-rw-  1 codespace root      29559 Jun 18 10:16 README.md
+drwxrwxrwx+ 2 codespace root       4096 Jun 18 10:03 images
+drwxrwxrwx+ 2 codespace codespace  4096 Jun 18 10:06 myroot
+```
 
 ## You are on your own, create your own static webpage
 
