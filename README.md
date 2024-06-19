@@ -733,8 +733,27 @@ You have now set up a Node.js application in a Docker container on nodejsnet net
 
 ***Questions:***
 
-1. What is the output of step 5 above, explain the error? ***(1 mark)*** __Fill answer here__.
-2. Show the instruction needed to make this work. ***(1 mark)*** __Fill answer here__.
+1. What is the output of step 5 above, explain the error? ***(1 mark)*** 
+```bash
+@cuyaya ➜ /workspaces/123_OSProject/nodejs-app (main) $ curl http://localhost:3000/random
+Server Error
+```
+__The error shows there was an issue with the connection or query to MySQL database.__
+
+2. Show the instruction needed to make this work. ***(1 mark)*** 
+
+__Create a bridge network__
+```sh
+docker network create bridgenet
+```
+__Run MySQL container on the bridge network__
+```sh
+docker run --name mysql-container --network bridgenet -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mydatabase -e MYSQL_USER=myuser -e MYSQL_PASSWORD=mypassword -d mysql:latest
+```
+__Run Node.js container on the bridge network__
+```sh
+docker run --name nodejs-container --network bridgenet -p 3000:3000 -d nodejs-app
+```
 
 
 
